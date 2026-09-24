@@ -87,7 +87,28 @@
     "share": "Share",
     "copy": "Copy",
     "copied": "Copied!",
-    "shareText": "Join me on Runhach, a running RPG! Use invite code {{code}} at {{url}}"
+    "shareText": "Join my party on Runhach, a running RPG! Use invite code {{code}} at {{url}}"
+  },
+  "party": {
+    "title": "⚔ Your party",
+    "together": "You're adventuring with {{names}}",
+    "invitedYou": "invited you",
+    "youInvited": "joined via your invite",
+    "empty": "No party yet — invite a friend and run together.",
+    "inviteLink": "Invite a friend",
+    "feedTitle": "Party feed",
+    "feedEmpty": "No runs yet. Finish a run and your party will see it here.",
+    "you": "You",
+    "ran": "{{name}} ran {{km}} km · +{{xp}} XP",
+    "found": "found",
+    "error": "Couldn't load your party.",
+    "rarity": {
+      "common": "Common",
+      "uncommon": "Uncommon",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    }
   },
   "deviceCheck": {
     "title": "Device check",

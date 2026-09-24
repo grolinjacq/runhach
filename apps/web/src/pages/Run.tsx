@@ -17,6 +17,8 @@ import { ChestSprite, ItemSprite } from "../components/Sprites";
 import { BrowserLocationSource } from "../lib/location/browser";
 import { simulatedSource } from "../lib/location/replay";
 import type { LocationError, LocationSource } from "../lib/location/types";
+import { PaceBuddy } from "../components/PaceBuddy";
+import { reportRunToParty } from "../lib/party";
 import { recordRun } from "../lib/progress";
 import { ScreenKeeper } from "../lib/wake-lock";
 
@@ -34,6 +36,8 @@ interface Track {
   last: TrackPoint | null;
   firstTime: number | null;
   distance: number;
+  /** Recent (time, cumulative distance) samples for the current pace. */
+  recent: Array<{ time: number; distance: number }>;
 }
 
 interface Summary {
@@ -45,7 +49,40 @@ interface Summary {
   loot: LootItem[];
 }
 
-const EMPTY_TRACK: Track = { last: null, firstTime: null, distance: 0 };
+const EMPTY_TRACK: Track = { last: null, firstTime: null, distance: 0, recent: [] };
+
+/** Current pace uses roughly the last 30 seconds of the run. */
+const PACE_WINDOW_MS = 30_000;
+
+function currentPace(track: Track): number | null {
+  const first = track.recent[0];
+  const last = track.recent.at(-1);
+  if (!first || !last) return null;
+  const meters = last.distance - first.distance;
+  const seconds = (last.time - first.time) / 1000;
+  if (seconds < 8 || meters < 5) return null;
+  return seconds / (meters / 1000);
+}
+
+/**
+ * Demo run pace (s/km) over simulated time: cycles granny → jogger → runner →
+ * sprinter → speedster so every pace buddy shows up.
+ */
+function demoPace(elapsedSeconds: number): number {
+  const cycle = elapsedSeconds % 960;
+  if (cycle < 180) return 630; // 10:30 /km
+  if (cycle < 360) return 480; // 8:00
+  if (cycle < 600) return 345; // 5:45
+  if (cycle < 780) return 270; // 4:30
+  return 200; // 3:20
+}
+
+const PARTICLES = Array.from({ length: 24 }, (_, i) => ({
+  angle: (360 / 24) * i + (i % 3) * 7,
+  distance: 110 + ((i * 37) % 90),
+  delay: (i % 5) * 40,
+  coin: i % 3 === 0,
+}));
 
 function formatDuration(seconds: number): string {
   const s = Math.max(0, Math.round(seconds));
@@ -189,6 +226,7 @@ function ChestReveal({ item, onClose }: { item: LootItem; onClose: () => void })
       className={`chest-reveal rarity-${item.rarity}${open ? " open" : ""}`}
       role="status"
       onClick={onClose}
+      style={{ "--rc": rarityColor(item.rarity) } as CSSProperties}
     >
       <div className="chest-reveal-card">
         <div className="chest-reveal-title">
@@ -215,9 +253,27 @@ function ChestReveal({ item, onClose }: { item: LootItem; onClose: () => void })
           </div>
         )}
         {open && (
-          <div className="chest-reveal-burst" aria-hidden>
-            <ChestSprite rarity={item.rarity} open size={72} />
-          </div>
+          <>
+            <div className="reveal-rays" aria-hidden />
+            <div className="reveal-particles" aria-hidden>
+              {PARTICLES.map((p, i) => (
+                <span
+                  key={i}
+                  className={p.coin ? "coin" : undefined}
+                  style={
+                    {
+                      "--angle": `${p.angle}deg`,
+                      "--distance": `${p.distance}px`,
+                      animationDelay: `${p.delay}ms`,
+                    } as CSSProperties
+                  }
+                />
+              ))}
+            </div>
+            <div className="chest-reveal-burst" aria-hidden>
+              <ChestSprite rarity={item.rarity} open size={72} />
+            </div>
+          </>
         )}
         <div className="muted small">{t("run.tapToClose")}</div>
       </div>
@@ -324,6 +380,7 @@ export function RunPage() {
             {
               start: DEMO_START,
               paceSecondsPerKm: DEMO_PACE_SECONDS,
+              paceProfile: demoPace,
               jitterMeters: 3,
               paceWobble: 0.05,
               seed: seed.current,
@@ -334,11 +391,17 @@ export function RunPage() {
     next.start(
       (point) => {
         if ((point.accuracy ?? 0) > BALANCE.antiCheat.maxAccuracyMeters) return;
-        setTrack((prev) => ({
-          last: point,
-          firstTime: prev.firstTime ?? point.time,
-          distance: prev.distance + (prev.last ? haversineMeters(prev.last, point) : 0),
-        }));
+        setTrack((prev) => {
+          const distance = prev.distance + (prev.last ? haversineMeters(prev.last, point) : 0);
+          const recent = [...prev.recent, { time: point.time, distance }];
+          while (
+            recent.length > 2 &&
+            (recent[1] as { time: number }).time < point.time - PACE_WINDOW_MS
+          ) {
+            recent.shift();
+          }
+          return { last: point, firstTime: prev.firstTime ?? point.time, distance, recent };
+        });
       },
       (err: LocationError) => setError(t("run.gpsError", { message: err.message || err.code })),
     );
@@ -371,6 +434,18 @@ export function RunPage() {
     } catch (e) {
       setError(t("run.saveError", { message: e instanceof Error ? e.message : String(e) }));
     }
+    const best = loot.reduce<LootItem | null>(
+      (top, item) => (!top || TIER[item.rarity] > TIER[top.rarity] ? item : top),
+      null,
+    );
+    void reportRunToParty({
+      distanceMeters,
+      durationSeconds,
+      xp,
+      bestItem: best
+        ? { name: best.name, rarity: best.rarity, slot: best.slot, base: best.base }
+        : null,
+    });
     setSummary({ xp, level, leveledUp, distanceMeters, durationSeconds, loot });
     setPhase("done");
   };
@@ -417,6 +492,7 @@ export function RunPage() {
               {t("run.waitingForGps")}
             </p>
           )}
+          <PaceBuddy paceSecondsPerKm={currentPace(track)} />
           <NextChest distance={track.distance} elapsed={elapsed} />
           {errorNotice}
           <div className="panel stack">

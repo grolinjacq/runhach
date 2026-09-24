@@ -52,6 +52,14 @@ test("passkey sign-up, invites, sign-in and email-link fallback", async ({ brows
     await expect(friend.getByRole("link", { name: "Tester feedback" })).toHaveCount(0);
   });
 
+  await test.step("inviter and friend see each other in their party", async () => {
+    await expect(friend.getByText("You're adventuring with Admin Ada")).toBeVisible();
+    await expect(friend.getByText("invited you", { exact: true })).toBeVisible();
+    await admin.goto("/");
+    await expect(admin.getByText("You're adventuring with Mira")).toBeVisible();
+    await expect(admin.getByText("joined via your invite")).toBeVisible();
+  });
+
   await test.step("the used invite shows who joined", async () => {
     await admin.goto("/invites");
     await expect(admin.getByText("Used by Mira")).toBeVisible();

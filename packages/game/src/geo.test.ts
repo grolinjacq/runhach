@@ -46,6 +46,18 @@ describe("simulateRun", () => {
     expect(Math.abs(noisy - clean) / clean).toBeLessThan(0.03);
   });
 
+  it("follows a changing pace profile", () => {
+    // 5 min at 10:00/km, then 5 min at 5:00/km = 0.5 km + 1 km.
+    const track = simulateRun({
+      start: NUREMBERG,
+      paceSecondsPerKm: 300,
+      paceProfile: (t) => (t <= 300 ? 600 : 300),
+      durationSeconds: 600,
+      loopMeters: 5000,
+    });
+    expect(trackDistanceMeters(track)).toBeCloseTo(1500, -1);
+  });
+
   it("is deterministic with noise for a given seed", () => {
     const opts = {
       start: NUREMBERG,

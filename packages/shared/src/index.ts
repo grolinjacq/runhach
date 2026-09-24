@@ -94,6 +94,57 @@ export type Invite = z.infer<typeof inviteSchema>;
 
 export const INVITES_PER_PLAYER = 3;
 
+// ---- Party (the invite graph, one hop each way) -------------------------
+
+export const RARITY_VALUES = ["common", "uncommon", "rare", "epic", "legendary"] as const;
+export const raritySchema = z.enum(RARITY_VALUES);
+
+export const partyItemSchema = z.object({
+  name: z.string().trim().min(1).max(80),
+  rarity: raritySchema,
+  slot: z.string().max(20),
+  base: z.string().max(20).optional(),
+});
+export type PartyItem = z.infer<typeof partyItemSchema>;
+
+export const partyRunRequestSchema = z.object({
+  distanceMeters: z.number().int().min(0).max(200_000),
+  durationSeconds: z.number().int().min(0).max(86_400),
+  xp: z.number().int().min(0).max(100_000),
+  bestItem: partyItemSchema.nullable(),
+});
+export type PartyRunRequest = z.infer<typeof partyRunRequestSchema>;
+
+export const partyMemberSchema = z.object({
+  id: z.string(),
+  displayName: z.string(),
+  /** "invited-you": you used their code. "you-invited": they used yours. */
+  relation: z.enum(["invited-you", "you-invited"]),
+  joinedAt: z.string(),
+});
+export type PartyMember = z.infer<typeof partyMemberSchema>;
+
+export const partyActivitySchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  displayName: z.string(),
+  isMe: z.boolean(),
+  distanceMeters: z.number().int(),
+  durationSeconds: z.number().int(),
+  xp: z.number().int(),
+  bestItem: partyItemSchema.nullable(),
+  createdAt: z.string(),
+});
+export type PartyActivity = z.infer<typeof partyActivitySchema>;
+
+export const partyResponseSchema = z.object({
+  members: z.array(partyMemberSchema),
+  feed: z.array(partyActivitySchema),
+});
+export type PartyResponse = z.infer<typeof partyResponseSchema>;
+
+export const PARTY_FEED_LIMIT = 20;
+
 // ---- Feedback -----------------------------------------------------------
 
 export const feedbackRequestSchema = z.object({

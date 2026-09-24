@@ -5,6 +5,8 @@ export interface SimulatedRunOptions {
   start: { lat: number; lon: number };
   /** Target pace in seconds per km. */
   paceSecondsPerKm: number;
+  /** Optional pace (s/km) as a function of elapsed seconds; overrides paceSecondsPerKm. */
+  paceProfile?: (elapsedSeconds: number) => number;
   durationSeconds: number;
   /** Seconds between GPS fixes. */
   intervalSeconds?: number;
@@ -27,6 +29,7 @@ export function simulateRun(options: SimulatedRunOptions): TrackPoint[] {
   const {
     start,
     paceSecondsPerKm,
+    paceProfile,
     durationSeconds,
     intervalSeconds = 1,
     loopMeters = 1200,
@@ -54,7 +57,8 @@ export function simulateRun(options: SimulatedRunOptions): TrackPoint[] {
   for (let t = 0; t <= durationSeconds; t += intervalSeconds) {
     if (t > 0) {
       const wobble = 1 + (rng.next() * 2 - 1) * paceWobble;
-      travelled += baseSpeed * wobble * intervalSeconds;
+      const speed = paceProfile ? 1000 / paceProfile(t) : baseSpeed;
+      travelled += speed * wobble * intervalSeconds;
     }
     // Angle measured from the centre: the start is due west of the centre (270°).
     const angle = 270 + (travelled / loopMeters) * 360;

@@ -10,6 +10,7 @@ import { loadSession } from "./lib/session";
 import { auth } from "./routes/auth";
 import { feedbackRoutes } from "./routes/feedback";
 import { me } from "./routes/me";
+import { party } from "./routes/party";
 
 export { RaidRoom } from "./raid-room";
 
@@ -45,6 +46,7 @@ api.get("/health", (c) => {
 api.route("/auth", auth);
 api.route("/", me);
 api.route("/", feedbackRoutes);
+api.route("/", party);
 
 // Live channel test used by the device check screen.
 api.get("/live/echo", (c) => {

@@ -1,6 +1,7 @@
 import { levelFromTotalXp } from "@runhach/game";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { PartyPanel } from "../components/PartyPanel";
 import { DEV_TOOLS } from "../config";
 import { useMe } from "../lib/auth";
 import { useProgress } from "../lib/progress";
@@ -61,6 +62,7 @@ export function HomePage() {
           <span style={{ width: `${(progress.xpIntoLevel / progress.xpForNextLevel) * 100}%` }} />
         </div>
       </section>
+      <PartyPanel />
       <Link to="/run" className="btn block">
         {t("home.startRun")}
       </Link>

@@ -92,3 +92,25 @@ export const feedback = sqliteTable("feedback", {
   context: text("context", { mode: "json" }).$type<Record<string, unknown>>(),
   createdAt: integer("created_at").notNull(),
 });
+
+/** Finished runs shared with the player's party feed. */
+export const runActivity = sqliteTable(
+  "run_activity",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    distanceM: integer("distance_m").notNull(),
+    durationS: integer("duration_s").notNull(),
+    xp: integer("xp").notNull(),
+    bestItemName: text("best_item_name"),
+    bestItemRarity: text("best_item_rarity", {
+      enum: ["common", "uncommon", "rare", "epic", "legendary"],
+    }),
+    bestItemSlot: text("best_item_slot"),
+    bestItemBase: text("best_item_base"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [index("run_activity_user_id_idx").on(t.userId)],
+);

@@ -1,0 +1,344 @@
+/* Pace buddy: pixel character running in place over a scrolling track. */
+.pb {
+  --pb-frame: 440ms; /* full 2-frame cycle */
+  --pb-scroll: 1.2s; /* time to scroll 120px of ground */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.pb--granny {
+  --pb-frame: 500ms;
+  --pb-scroll: 4s;
+}
+.pb--jogger {
+  --pb-frame: 440ms;
+  --pb-scroll: 2s;
+}
+.pb--runner {
+  --pb-frame: 380ms;
+  --pb-scroll: 1.1s;
+}
+.pb--sprinter {
+  --pb-frame: 320ms;
+  --pb-scroll: 0.6s;
+}
+.pb--speedster {
+  --pb-frame: 300ms;
+  --pb-scroll: 0.3s;
+}
+
+.pb-strip {
+  position: relative;
+  width: 100%;
+  height: 96px;
+  overflow: hidden;
+  background: linear-gradient(#120e19 0%, #120e19 55%, #1c1527 100%);
+  border: 2px solid #0d0a12;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+/* Distant twinkles (slow parallax layer). */
+.pb-sky {
+  position: absolute;
+  inset: 0 0 16px 0;
+  background-image:
+    linear-gradient(#3a2f4a, #3a2f4a), linear-gradient(#2a2236, #2a2236),
+    linear-gradient(#4a3c5e, #4a3c5e);
+  background-size:
+    2px 2px,
+    2px 2px,
+    2px 2px;
+  background-repeat: no-repeat;
+  background-position:
+    10% 20%,
+    45% 55%,
+    80% 30%;
+}
+.pb-sky::before,
+.pb-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#3a2f4a 1px, transparent 1.5px);
+  background-size: 40px 24px;
+  background-position: 0 6px;
+  animation: pb-scroll calc(var(--pb-scroll) * 4) linear infinite;
+}
+.pb-sky::after {
+  background-image: radial-gradient(#2a2236 1px, transparent 1.5px);
+  background-size: 60px 30px;
+  background-position: 20px 16px;
+  animation-duration: calc(var(--pb-scroll) * 8);
+}
+
+/* Track: top line, gold lane dashes, pebbles. */
+.pb-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16px;
+  background-color: #1a1423;
+  background-image:
+    linear-gradient(#5a4a6e, #5a4a6e), linear-gradient(90deg, #f2c14e 0 8px, transparent 8px),
+    linear-gradient(90deg, #3a2f4a 0 4px, transparent 4px);
+  background-size:
+    100% 2px,
+    24px 2px,
+    40px 2px;
+  background-repeat: repeat-x;
+  background-position:
+    0 0,
+    0 6px,
+    12px 11px;
+  animation: pb-ground var(--pb-scroll) linear infinite;
+}
+@keyframes pb-ground {
+  to {
+    background-position:
+      0 0,
+      -120px 6px,
+      -108px 11px;
+  }
+}
+@keyframes pb-scroll {
+  to {
+    background-position-x: -120px;
+  }
+}
+
+/* Character */
+.pb-char {
+  position: absolute;
+  left: calc(50% - 32px);
+  bottom: 14px;
+  width: 64px;
+  height: 64px;
+  animation: pb-pop 360ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.pb-sprite,
+.pb-ghost {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 1;
+}
+.pb-shadow {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -2px;
+  height: 4px;
+  background: #0a0710;
+  border-radius: 2px;
+}
+.pb-frame {
+  animation: pb-frame-a var(--pb-frame) steps(1, end) infinite;
+}
+.pb-frame--b {
+  animation-name: pb-frame-b;
+}
+@keyframes pb-frame-a {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes pb-frame-b {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes pb-pop {
+  0% {
+    transform: scale(0.4) translateY(12px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25) translateY(-6px);
+    opacity: 1;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Idle: gentle breathing bob, ground stands still. */
+.pb--idle .pb-ground,
+.pb--idle .pb-sky::before,
+.pb--idle .pb-sky::after {
+  animation-play-state: paused;
+}
+.pb--idle .pb-frame {
+  animation-duration: 2.4s;
+}
+.pb--idle .pb-frame--a {
+  animation-name: pb-blink-a;
+}
+.pb--idle .pb-frame--b {
+  animation-name: pb-blink-b;
+}
+@keyframes pb-blink-a {
+  0% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes pb-blink-b {
+  0% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Speedster: afterimages, streaks, flashing bolts. */
+.pb-ghost {
+  z-index: 0;
+  filter: sepia(1) saturate(6) hue-rotate(160deg);
+}
+.pb-ghost--1 {
+  transform: translateX(-16px);
+  opacity: 0.45;
+  animation: pb-ghost 180ms steps(2, end) infinite;
+}
+.pb-ghost--2 {
+  transform: translateX(-32px);
+  opacity: 0.2;
+  animation: pb-ghost 180ms steps(2, end) infinite reverse;
+}
+@keyframes pb-ghost {
+  50% {
+    opacity: 0.1;
+  }
+}
+.pb-streaks {
+  position: absolute;
+  inset: 12px 0 18px 0;
+  background-image:
+    linear-gradient(90deg, transparent 0 20%, #7fd6ff 20% 60%, transparent 60%),
+    linear-gradient(90deg, transparent 0 50%, #3a7bff 50% 95%, transparent 95%),
+    linear-gradient(90deg, transparent 0 10%, #fff3c4 10% 35%, transparent 35%);
+  background-size:
+    90px 2px,
+    130px 2px,
+    70px 2px;
+  background-repeat: repeat-x;
+  background-position:
+    0 10px,
+    0 30px,
+    0 50px;
+  opacity: 0.8;
+  animation: pb-streaks 0.25s linear infinite;
+}
+@keyframes pb-streaks {
+  to {
+    background-position:
+      -90px 10px,
+      -130px 30px,
+      -70px 50px;
+  }
+}
+.pb-bolt {
+  position: absolute;
+  z-index: 2;
+  animation: pb-flash 0.6s steps(1, end) infinite;
+}
+.pb-bolt--1 {
+  top: 8px;
+  right: 18%;
+}
+.pb-bolt--2 {
+  top: 26px;
+  left: 16%;
+  animation-delay: -0.3s;
+}
+@keyframes pb-flash {
+  0% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0;
+  }
+}
+.pb--speedster .pb-strip {
+  animation: pb-glow 0.6s steps(1, end) infinite;
+}
+@keyframes pb-glow {
+  0% {
+    box-shadow:
+      inset 0 0 0 2px #f2c14e,
+      0 0 12px #3a7bff;
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 2px #3a7bff,
+      0 0 4px #f2c14e;
+  }
+}
+
+/* Label */
+.pb-label {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #f2c14e;
+  text-shadow: 2px 2px 0 #0d0a12;
+  animation: pb-pop 360ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.pb--idle .pb-label {
+  color: #b9b2c9;
+}
+.pb--speedster .pb-label {
+  color: #7fd6ff;
+  animation:
+    pb-pop 360ms cubic-bezier(0.2, 1.6, 0.4, 1) both,
+    pb-shake 0.2s steps(2, end) 360ms infinite;
+}
+@keyframes pb-shake {
+  50% {
+    transform: translateX(1px) rotate(-1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb *,
+  .pb *::before,
+  .pb *::after,
+  .pb--speedster .pb-strip {
+    animation: none !important;
+  }
+  .pb-frame--b,
+  .pb-ghost {
+    display: none;
+  }
+}
