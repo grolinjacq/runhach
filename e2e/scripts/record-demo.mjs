@@ -63,7 +63,9 @@ await wait(600);
 await page.getByRole("button", { name: "Start run" }).click();
 await caption("Live stats + a countdown: distance and time until your next loot chest.");
 await chest(1).waitFor({ timeout: 30000 });
-await caption("Every km the chest shakes, bursts open, and your loot pops out! 🔊 voice + 8-bit sound");
+await caption(
+  "Every km the chest shakes, bursts open, and your loot pops out! 🔊 voice + 8-bit sound",
+);
 await wait(5000);
 await caption("Rarity is rolled from a server-issued seed: Common → Legendary.");
 await chest(2).waitFor({ timeout: 30000 });
@@ -71,7 +73,10 @@ await wait(5000);
 await caption("Run faster or farther than your own usual pace → better loot odds.");
 await chest(3).waitFor({ timeout: 30000 });
 await wait(4500);
-await page.locator(".chest-reveal").click().catch(() => {});
+await page
+  .locator(".chest-reveal")
+  .click()
+  .catch(() => {});
 await wait(500);
 await page.getByRole("button", { name: "Stop run" }).click();
 await wait(800);

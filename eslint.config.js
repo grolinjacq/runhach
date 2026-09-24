@@ -36,4 +36,9 @@ export default tseslint.config(
     files: ["**/*.{js,mjs}", "**/*.config.ts", "e2e/**/*.ts", "**/scripts/**"],
     languageOptions: { globals: globals.node },
   },
+  {
+    // Playwright scripts run code inside the page (page.evaluate), so browser globals exist too.
+    files: ["e2e/**/*.{ts,mjs}"],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
 );
