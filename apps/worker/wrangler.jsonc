@@ -1,0 +1,52 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Production (the friends beta). Deployed from `main` by GitHub Actions.
+  "name": "runhach",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  // No database_id on purpose: wrangler finds the database by name, or
+  // creates it on the first deploy.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "runhach-db", "migrations_dir": "migrations" },
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "RAID_ROOM", "class_name": "RaidRoom" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RaidRoom"] }],
+  "vars": {
+    "APP_ENV": "production",
+    "BUILD_VERSION": "dev",
+    "RP_NAME": "Runhach",
+    "EMAIL_FROM": "",
+    "EXTRA_ORIGINS": "",
+  },
+  "env": {
+    // Shared preview deployment for pull requests, with its own database.
+    "preview": {
+      "name": "runhach-preview",
+      "d1_databases": [
+        { "binding": "DB", "database_name": "runhach-db-preview", "migrations_dir": "migrations" },
+      ],
+      "durable_objects": {
+        "bindings": [{ "name": "RAID_ROOM", "class_name": "RaidRoom" }],
+      },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RaidRoom"] }],
+      "vars": {
+        "APP_ENV": "preview",
+        "BUILD_VERSION": "dev",
+        "RP_NAME": "Runhach (preview)",
+        "EMAIL_FROM": "",
+        "EXTRA_ORIGINS": "",
+      },
+    },
+  },
+}

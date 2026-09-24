@@ -1,0 +1,193 @@
+{
+  "app": {
+    "name": "Runhach",
+    "tagline": "Every kilometer is an adventure."
+  },
+  "welcome": {
+    "title": "Run. Loot. Level up.",
+    "body": "Every kilometer earns XP and treasure. Team up with friends to take down bosses, but only while you're running.",
+    "createAccount": "Create account",
+    "signIn": "Sign in",
+    "betaNote": "Private beta: you'll need an invite code from a friend.",
+    "deviceCheck": "Check my phone"
+  },
+  "signup": {
+    "title": "Create your adventurer",
+    "displayName": "Adventurer name",
+    "email": "Email",
+    "emailHint": "Only used to send you a sign-in link if you ever lose your passkey.",
+    "inviteCode": "Invite code",
+    "inviteHint": "Ask a friend in the beta for a code like ABCD-1234.",
+    "bootstrapNote": "You're the very first player, so your account becomes the admin.",
+    "passkeyExplain": "A passkey lets you sign in with Face ID, a fingerprint or your screen lock. There's no password to remember.",
+    "submit": "Create passkey & join",
+    "working": "Waiting for your passkey…",
+    "haveAccount": "Already have an account? Sign in"
+  },
+  "login": {
+    "title": "Welcome back",
+    "passkey": "Sign in with passkey",
+    "working": "Waiting for your passkey…",
+    "or": "or",
+    "emailTitle": "Get a sign-in link by email",
+    "emailLabel": "Email",
+    "emailSubmit": "Email me a link",
+    "emailSent": "If that email has an account, a sign-in link is on its way. It works for 15 minutes.",
+    "emailDisabled": "Email sign-in isn't set up yet. Use your passkey.",
+    "devLink": "Dev link (local only):",
+    "noAccount": "New here? Create an account"
+  },
+  "emailLogin": {
+    "title": "Signing you in…",
+    "missing": "This link is missing its token. Request a new one.",
+    "failed": "That link didn't work",
+    "addPasskeyTitle": "Add a passkey on this device?",
+    "addPasskeyBody": "Next time you can sign in with Face ID or your fingerprint instead of waiting for an email.",
+    "addPasskey": "Add passkey",
+    "skip": "Not now",
+    "requestNew": "Request a new link"
+  },
+  "home": {
+    "greeting": "Hail, {{name}}!",
+    "level": "Level {{level}}",
+    "xp": "{{current}} / {{next}} XP",
+    "comingSoon": "Runs, XP and loot arrive in the next phases. For now, make sure your phone is ready for adventure:",
+    "deviceCheck": "Run the device check",
+    "invites": "Invite friends",
+    "profile": "Profile & passkeys",
+    "adminFeedback": "Tester feedback",
+    "gpsLab": "GPS lab (dev)"
+  },
+  "profile": {
+    "title": "Profile",
+    "displayName": "Adventurer name",
+    "save": "Save",
+    "saved": "Saved!",
+    "email": "Email",
+    "passkeys_one": "{{count}} passkey",
+    "passkeys_other": "{{count}} passkeys",
+    "addPasskey": "Add a passkey on this device",
+    "passkeyAdded": "Passkey added.",
+    "memberSince": "Joined {{date}}",
+    "admin": "Admin",
+    "logout": "Sign out"
+  },
+  "invites": {
+    "title": "Invite friends",
+    "body": "Each code lets one friend join the beta.",
+    "create": "Create invite code",
+    "limit": "{{used}} of {{limit}} codes created",
+    "unlimited": "As an admin you can create as many codes as you like.",
+    "none": "No codes yet.",
+    "usedBy": "Used by {{name}}",
+    "used": "Used",
+    "unused": "Not used yet",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "shareText": "Join me on Runhach, a running RPG! Use invite code {{code}} at {{url}}"
+  },
+  "deviceCheck": {
+    "title": "Device check",
+    "intro": "Tests what this phone can do during runs. Keep this screen open and allow any permission prompts.",
+    "run": "Run all checks",
+    "running": "Checking…",
+    "send": "Send results to the team",
+    "sent": "Results sent. Thanks!",
+    "status": {
+      "pass": "OK",
+      "warn": "Check",
+      "fail": "Missing",
+      "pending": "…",
+      "idle": "–"
+    },
+    "checks": {
+      "secure": "Secure connection",
+      "installed": "Installed to home screen",
+      "gps": "GPS",
+      "wakeLock": "Keep screen on",
+      "speech": "Voice announcements",
+      "sound": "Sound effects",
+      "vibration": "Vibration",
+      "passkeys": "Passkeys",
+      "storage": "Offline storage",
+      "live": "Live connection"
+    },
+    "details": {
+      "yes": "Yes",
+      "notInstalled": "Not yet. Use your browser's Share or menu button, then “Add to Home Screen”.",
+      "gpsAccuracy": "Accuracy {{accuracy}} m",
+      "gpsWeak": "Weak signal: accuracy {{accuracy}} m. Try outdoors.",
+      "gpsDenied": "Permission denied. Allow location for this site in your settings.",
+      "gpsTimeout": "No GPS fix within 20 seconds. Try outdoors.",
+      "notSupported": "Not supported",
+      "vibrationIos": "Not supported (normal on iPhone; you'll get sounds instead)",
+      "wakeLockOk": "Screen can stay on during runs",
+      "speechOk": "You should have heard a voice",
+      "soundOk": "You should have heard a beep",
+      "vibrationOk": "You should have felt a buzz",
+      "passkeysOk": "Face ID / fingerprint available",
+      "passkeysNoPlatform": "Supported, but no built-in fingerprint/face unlock found",
+      "storageOk": "Runs can be saved offline",
+      "liveOk": "{{ms}} ms round trip",
+      "liveFailed": "Could not connect",
+      "error": "Error: {{message}}"
+    }
+  },
+  "gpsLab": {
+    "title": "GPS lab",
+    "intro": "Developer tool: test tracking without going for a run.",
+    "source": "Source",
+    "sourceDevice": "Device GPS",
+    "sourceSim": "Simulated run",
+    "sourceGpx": "GPX file replay",
+    "pace": "Pace (min:ss per km)",
+    "speed": "Replay speed",
+    "file": "GPX file",
+    "start": "Start",
+    "stop": "Stop",
+    "fixes": "Fixes",
+    "distance": "Distance",
+    "elapsed": "Time",
+    "currentPace": "Avg pace",
+    "accuracy": "Accuracy",
+    "screenOn": "Screen kept on",
+    "error": "GPS error: {{message}}"
+  },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Send feedback",
+    "placeholder": "What happened? What did you expect?",
+    "send": "Send",
+    "sent": "Thanks! Your feedback reached the team.",
+    "close": "Close",
+    "build": "Build {{version}}"
+  },
+  "admin": {
+    "feedbackTitle": "Tester feedback",
+    "empty": "No feedback yet.",
+    "anonymous": "Signed out"
+  },
+  "pwa": {
+    "updateAvailable": "A new version is ready.",
+    "update": "Update",
+    "install": "Install app",
+    "iosInstall": "To install: tap Share, then “Add to Home Screen”.",
+    "dismiss": "Dismiss"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Can't reach the server. Check your connection.",
+    "passkeyCancelled": "The passkey prompt was cancelled.",
+    "passkeysUnsupported": "This browser doesn't support passkeys. Use the email link instead."
+  },
+  "notFound": {
+    "title": "Lost in the woods",
+    "body": "This page doesn't exist.",
+    "home": "Back to camp"
+  },
+  "common": {
+    "back": "Back",
+    "loading": "Loading…"
+  }
+}

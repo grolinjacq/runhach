@@ -1,42 +1,42 @@
 # Runhach — Product Spec
 
 > Status: **Draft v1**, from the kickoff interview on 2026-09-24.
-> Every number in this document is a *starting value* that lives in one balance config file and gets tuned between test batches.
+> Every number in this document is a _starting value_ that lives in one balance config file and gets tuned between test batches.
 
 ## 1. Vision
 
-A running app that feels like an RPG. Every kilometer you run earns experience and has a chance to drop loot. Running faster, farther or more steadily than *your own* usual improves your odds. Players grow a character through a skill tree with three branches: **Warrior**, **Archer** and **Mage**. Each branch is powered by a different running style. Bosses are weak to certain styles, so a mixed team of friends beats them far more easily than a solo player. Solo is possible, but the player needs more levels and more runs. **You can only damage a boss while you are running.**
+A running app that feels like an RPG. Every kilometer you run earns experience and has a chance to drop loot. Running faster, farther or more steadily than _your own_ usual improves your odds. Players grow a character through a skill tree with three branches: **Warrior**, **Archer** and **Mage**. Each branch is powered by a different running style. Bosses are weak to certain styles, so a mixed team of friends beats them far more easily than a solo player. Solo is possible, but the player needs more levels and more runs. **You can only damage a boss while you are running.**
 
 Target for now: a **private beta with friends**, built and tested phase by phase (see [ROADMAP.md](./ROADMAP.md)).
 
 ## 2. Decision log (kickoff interview)
 
-| Topic | Decision |
-|---|---|
-| Platform | **Web app (PWA)** first. Later, the same code gets wrapped with Capacitor for native iOS/Android. |
-| Screen-lock problem | While running, the app keeps the screen on (Screen Wake Lock) with a dark, battery-friendly run screen. The native wrap in a later phase adds true background GPS. |
-| Run recording | **In-app GPS.** Imports from Strava, Apple Health or Garmin come in a later phase. |
-| Backend | **Cloudflare**: Workers, D1 (SQL database) and Durable Objects (live raid rooms). |
-| Goal | **Private beta with friends.** |
-| Front end | **React + Vite + TypeScript**. |
-| Login | **Passkeys** (Face ID or fingerprint) with an **emailed login link** as fallback. The beta is invite-only. |
-| Boss fights | **Raid window + live bonus.** A boss stays open for several days. Each teammate's runs deal damage whenever they run, and running at the same time as teammates adds a synergy bonus. |
-| Classes | **Skill-tree branches, not locked classes.** As you level up you can stay a generalist or specialize. |
-| Class strengths | **Running style.** Warrior = speed and intervals, Archer = steady pace, Mage = distance and endurance. |
-| Specialist vs generalist | Specialists unlock powerful **capstone** abilities. Generalists have flexible, smaller bonuses and find solo play easier. |
-| Respec | Allowed, but **costs in-game gold**. |
-| Multiplier fairness | Measured against your **personal baseline**, not absolute pace. |
-| Loot | **Stat gear + cosmetics.** |
-| Team size | **Up to 4.** |
-| Joining | Friends can join **at any time, including in the middle of a raid**. The boss's health doesn't reset. |
-| Anti-cheat | **Basic checks**: speed caps and GPS-jump detection. Suspicious runs get flagged. |
-| Extras | **Quests + streaks** and **achievements + leaderboards**. No crafting or pets for now. |
-| Art style | **Pixel-art fantasy.** |
-| Language | **English, translation-ready** (all text in locale files from day one). |
-| In-run feedback | **Voice + sounds + vibration.** |
-| Route privacy | **Only the runner sees their GPS route.** Teammates see stats only. |
-| Treadmill / indoor | **Not in the beta.** To be revisited when imports arrive. |
-| Deployment | **Cloudflare, auto-deployed from GitHub.** |
+| Topic                    | Decision                                                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform                 | **Web app (PWA)** first. Later, the same code gets wrapped with Capacitor for native iOS/Android.                                                                                     |
+| Screen-lock problem      | While running, the app keeps the screen on (Screen Wake Lock) with a dark, battery-friendly run screen. The native wrap in a later phase adds true background GPS.                    |
+| Run recording            | **In-app GPS.** Imports from Strava, Apple Health or Garmin come in a later phase.                                                                                                    |
+| Backend                  | **Cloudflare**: Workers, D1 (SQL database) and Durable Objects (live raid rooms).                                                                                                     |
+| Goal                     | **Private beta with friends.**                                                                                                                                                        |
+| Front end                | **React + Vite + TypeScript**.                                                                                                                                                        |
+| Login                    | **Passkeys** (Face ID or fingerprint) with an **emailed login link** as fallback. The beta is invite-only.                                                                            |
+| Boss fights              | **Raid window + live bonus.** A boss stays open for several days. Each teammate's runs deal damage whenever they run, and running at the same time as teammates adds a synergy bonus. |
+| Classes                  | **Skill-tree branches, not locked classes.** As you level up you can stay a generalist or specialize.                                                                                 |
+| Class strengths          | **Running style.** Warrior = speed and intervals, Archer = steady pace, Mage = distance and endurance.                                                                                |
+| Specialist vs generalist | Specialists unlock powerful **capstone** abilities. Generalists have flexible, smaller bonuses and find solo play easier.                                                             |
+| Respec                   | Allowed, but **costs in-game gold**.                                                                                                                                                  |
+| Multiplier fairness      | Measured against your **personal baseline**, not absolute pace.                                                                                                                       |
+| Loot                     | **Stat gear + cosmetics.**                                                                                                                                                            |
+| Team size                | **Up to 4.**                                                                                                                                                                          |
+| Joining                  | Friends can join **at any time, including in the middle of a raid**. The boss's health doesn't reset.                                                                                 |
+| Anti-cheat               | **Basic checks**: speed caps and GPS-jump detection. Suspicious runs get flagged.                                                                                                     |
+| Extras                   | **Quests + streaks** and **achievements + leaderboards**. No crafting or pets for now.                                                                                                |
+| Art style                | **Pixel-art fantasy.**                                                                                                                                                                |
+| Language                 | **English, translation-ready** (all text in locale files from day one).                                                                                                               |
+| In-run feedback          | **Voice + sounds + vibration.**                                                                                                                                                       |
+| Route privacy            | **Only the runner sees their GPS route.** Teammates see stats only.                                                                                                                   |
+| Treadmill / indoor       | **Not in the beta.** To be revisited when imports arrive.                                                                                                                             |
+| Deployment               | **Cloudflare, auto-deployed from GitHub.**                                                                                                                                            |
 
 ## 3. Core loop
 
@@ -68,19 +68,19 @@ Run ──► every km: XP + a loot chest (rarity boosted by your effort multipl
 
 ## 6. Effort multiplier (personal baseline)
 
-The multiplier rewards beating *your own* norm, so a 7:30/km beginner and a 4:00/km racer have equal odds.
+The multiplier rewards beating _your own_ norm, so a 7:30/km beginner and a 4:00/km racer have equal odds.
 
 - **Baseline** = the median pace and median distance of your last 10 validated runs (each at least 1 km, from the last 60 days). To make sandbagging (running slow on purpose to lower your baseline) pointless, the pace baseline uses your faster runs and drifts down only slowly.
 - **Calibration:** your first 3 runs get a flat ×1.2, so onboarding feels good.
 - **Bonuses (added together):**
 
-| Bonus | Rule | Max |
-|---|---|---|
-| Pace | +4 × (how much faster than baseline you ran), e.g. 5% faster = +0.2 | +0.4 (reached at 10% faster) |
-| Distance | +0.5 × (how much longer than baseline you ran) | +0.4 |
-| Consistency | km splits vary by less than 5% | +0.1 |
-| Negative split | second half faster than the first | +0.1 |
-| Weekly streak | +0.05 per consecutive active week | +0.25 |
+| Bonus          | Rule                                                                | Max                          |
+| -------------- | ------------------------------------------------------------------- | ---------------------------- |
+| Pace           | +4 × (how much faster than baseline you ran), e.g. 5% faster = +0.2 | +0.4 (reached at 10% faster) |
+| Distance       | +0.5 × (how much longer than baseline you ran)                      | +0.4                         |
+| Consistency    | km splits vary by less than 5%                                      | +0.1                         |
+| Negative split | second half faster than the first                                   | +0.1                         |
+| Weekly streak  | +0.05 per consecutive active week                                   | +0.25                        |
 
 - **Effort multiplier** = 1 + bonuses, **floored at 0.9 and capped at 2.0**. Easy and recovery runs are barely penalized.
 - **Health guardrail:** the pace bonus maxes out at 10% faster than baseline, so there's no reason to go all-out every run. Streaks count **weeks, not days**, so rest days never break a streak.
@@ -88,24 +88,24 @@ The multiplier rewards beating *your own* norm, so a 7:30/km beginner and a 4:00
 ## 7. Loot
 
 - **Drops:** each full km gives **1 chest**. A final partial km of at least 500 m gives a small pouch (gold only).
-- **Live reveal:** at each km the app announces the chest's *rarity* ("Kilometer 3 — Epic chest!"). The *contents* are opened in a reveal ceremony after the run.
+- **Live reveal:** at each km the app announces the chest's _rarity_ ("Kilometer 3 — Epic chest!"). The _contents_ are opened in a reveal ceremony after the run.
 - **Rarities (base odds):** Common 60% · Uncommon 25% · Rare 10% · Epic 4% · Legendary 1%. Your luck (effort multiplier × gear Luck) raises the odds of higher rarities: each tier's weight is multiplied by `luck^(tier/2)`, where Common is tier 0 and Legendary is tier 4. At a luck of ×2, that gives about 46 / 27 / 15 / 9 / 3%.
 - **Bad-luck protection:** you're guaranteed a Rare or better chest if 10 chests in a row were below Rare.
 - **Gear slots (beta):** Weapon, Armor, Boots, Trinket.
 - **Stats:** Strength (boosts Warrior-style damage), Dexterity (Archer), Intellect (Mage), Luck (loot odds). Legendaries have one unique effect, e.g. "every 5th km is Rare or better."
 - **Cosmetics:** pixel-art avatar outfits, colors, titles and profile frames. Visual only, no stats.
 - **Gold:** comes from pouches, chests, levels and quests. It pays for respecs and later for cosmetics. No real-money purchases in the beta.
-- **Fair and cheat-resistant rolls:** the server issues a random *seed* when a run starts. The same game-logic code runs on the phone (for live announcements) and on the server (which has the final say when the run is submitted). The phone can roll chests offline, and the server re-checks every roll.
+- **Fair and cheat-resistant rolls:** the server issues a random _seed_ when a run starts. The same game-logic code runs on the phone (for live announcements) and on the server (which has the final say when the run is submitted). The phone can roll chests offline, and the server re-checks every roll.
 
 ## 8. Skill tree (classes)
 
 One character per player, with three branches. Where you spend your points decides your identity (and your title, e.g. "Warrior", "Spellblade", "Wanderer").
 
-| Branch | Powered by | Style score per km | Example skills | Capstone (example) |
-|---|---|---|---|---|
-| **Warrior** — Path of Speed | Running fast and in surges | This km's pace vs your baseline | *Charge*: bonus damage on your fastest km. *Berserk*: surges can critically hit. | **Whirlwind**: every surge during a raid deals a burst hit |
-| **Archer** — Path of Rhythm | Holding an even pace | How close this km is to your run's average pace | *Steady Aim*: bonus for every km within ±5% of your average. *Volley*. | **Perfect Shot**: a negative-split run deals a big critical hit |
-| **Mage** — Path of Endurance | Distance and time on your feet | How far into the run you are, relative to your baseline distance | *Mana Well*: damage grows with each km. *Arcane Stamina*. | **Meteor**: every km beyond your baseline distance deals ×3 |
+| Branch                       | Powered by                     | Style score per km                                               | Example skills                                                                   | Capstone (example)                                              |
+| ---------------------------- | ------------------------------ | ---------------------------------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Warrior** — Path of Speed  | Running fast and in surges     | This km's pace vs your baseline                                  | _Charge_: bonus damage on your fastest km. _Berserk_: surges can critically hit. | **Whirlwind**: every surge during a raid deals a burst hit      |
+| **Archer** — Path of Rhythm  | Holding an even pace           | How close this km is to your run's average pace                  | _Steady Aim_: bonus for every km within ±5% of your average. _Volley_.           | **Perfect Shot**: a negative-split run deals a big critical hit |
+| **Mage** — Path of Endurance | Distance and time on your feet | How far into the run you are, relative to your baseline distance | _Mana Well_: damage grows with each km. _Arcane Stamina_.                        | **Meteor**: every km beyond your baseline distance deals ×3     |
 
 - **Tiers:** each branch has tier 1 → tier 2 (needs 5 points in that branch) → tier 3 (10 points) → capstone (15 points). Some small skills in every branch are utility (luck, XP, gold).
 - **Generalists** reach every boss weakness a little, which is why solo play is easier for them. **Specialists** hit hard against one weakness through their capstone, which is why teams want a mix.
@@ -114,10 +114,10 @@ One character per player, with three branches. Where you spend your points decid
 ## 9. Bosses and raids
 
 - **Bestiary:** bosses are grouped into acts, and beating a boss unlocks the next. Each boss has a recommended level, fixed health, **weaknesses and resistances** to the three styles (×1.5 against a weakness, ×0.5 against a resistance), and sometimes a mechanic. Act 1 examples:
-  - *Goblin King*: tutorial boss, neutral to every style.
-  - *Swift Harpy*: weak to Speed. You have to catch it.
-  - *Stone Golem*: weak to Rhythm, since steady, precise hits find the cracks. Resists Speed.
-  - *Mire Troll*: huge health pool, weak to Endurance. Regenerates if you leave it alone for 2 days.
+  - _Goblin King_: tutorial boss, neutral to every style.
+  - _Swift Harpy_: weak to Speed. You have to catch it.
+  - _Stone Golem_: weak to Rhythm, since steady, precise hits find the cracks. Resists Speed.
+  - _Mire Troll_: huge health pool, weak to Endurance. Regenerates if you leave it alone for 2 days.
 - **Raid window:** a team starts a raid, which stays open for **7 days** by default (set per boss). **Only kilometers run during the window deal damage**, and only while running. Your run screen shows the boss's health bar live.
 - **Damage per km** = base (by level) × gear × Σ over the three branches of (your share of points in that branch × this km's style score × the boss's modifier for that style) × synergy × capstone effects.
 - **Live synergy:** +10% damage for each teammate running at the same moment, up to +30% ("Mira is running with you! +10%").

@@ -1,6 +1,6 @@
 # Runhach — Architecture
 
-> Status: **Draft v1**. Phase 0 turns this into a working skeleton; details may shift as it's built.
+> Status: **v1, Phase 0 built.** The skeleton below exists and is tested. Later phases fill in the game logic.
 
 ## Overview
 
@@ -34,6 +34,7 @@ packages/
               seeded random numbers, balance config, XP/levels, effort multiplier,
               loot tables and rolls, style scores, damage, run validation
   shared/     API contracts (zod schemas + types) shared by web and worker
+e2e/          Playwright end-to-end tests and GPX fixtures
 docs/         Spec, architecture, roadmap
 ```
 
@@ -41,37 +42,37 @@ The key design choice is **`packages/game`**. The same code runs on the phone, t
 
 ## Tech choices
 
-| Concern | Choice | Why |
-|---|---|---|
-| UI | React 19 + Vite + TypeScript (strict) | Largest ecosystem; easy to wrap with Capacitor later |
-| PWA | vite-plugin-pwa (Workbox) | Installable, offline shell, update prompts |
-| Local storage | IndexedDB (via Dexie) | Crash-safe in-progress runs and an upload queue |
-| API | Hono on Cloudflare Workers | Small, typed, built for Workers |
-| Database | Cloudflare D1 + Drizzle ORM + wrangler migrations | Relational data (inventories, teams) with typed queries |
-| Live raids | Durable Objects + hibernating WebSockets | One object per raid holds live boss HP and fans out updates cheaply |
-| Auth | Passkeys (@simplewebauthn) + emailed login link; session in an HTTP-only cookie stored in D1 | No passwords; the invite code gates sign-up |
-| Email | Resend (proposed) | Login-link emails. In dev, links are logged to the console |
-| Maps (private route view) | MapLibre or Leaflet with OpenStreetMap-based tiles | Free for beta scale; tile provider decided in Phase 1 |
-| Tests | Vitest (unit), `@cloudflare/vitest-pool-workers` (API + D1 + Durable Object integration), Playwright (end-to-end with **GPS replay**) | Every phase can be tested without going for a run |
-| CI/CD | GitHub Actions + wrangler | Checks on every PR, a preview URL per PR, production deploy on merge |
+| Concern                   | Choice                                                                                                                                | Why                                                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| UI                        | React 19 + Vite + TypeScript (strict)                                                                                                 | Largest ecosystem; easy to wrap with Capacitor later                 |
+| PWA                       | vite-plugin-pwa (Workbox)                                                                                                             | Installable, offline shell, update prompts                           |
+| Local storage             | IndexedDB (via Dexie)                                                                                                                 | Crash-safe in-progress runs and an upload queue                      |
+| API                       | Hono on Cloudflare Workers                                                                                                            | Small, typed, built for Workers                                      |
+| Database                  | Cloudflare D1 + Drizzle ORM + wrangler migrations                                                                                     | Relational data (inventories, teams) with typed queries              |
+| Live raids                | Durable Objects + hibernating WebSockets                                                                                              | One object per raid holds live boss HP and fans out updates cheaply  |
+| Auth                      | Passkeys (@simplewebauthn) + emailed login link; session in an HTTP-only cookie stored in D1                                          | No passwords; the invite code gates sign-up                          |
+| Email                     | Resend (proposed)                                                                                                                     | Login-link emails. In dev, links are logged to the console           |
+| Maps (private route view) | MapLibre or Leaflet with OpenStreetMap-based tiles                                                                                    | Free for beta scale; tile provider decided in Phase 1                |
+| Tests                     | Vitest (unit), `@cloudflare/vitest-pool-workers` (API + D1 + Durable Object integration), Playwright (end-to-end with **GPS replay**) | Every phase can be tested without going for a run                    |
+| CI/CD                     | GitHub Actions + wrangler                                                                                                             | Checks on every PR, a preview URL per PR, production deploy on merge |
 
 ## Data model (first sketch)
 
-| Table | Key columns |
-|---|---|
-| `users` | id, display_name, email, created_at |
-| `passkeys` | id, user_id, public_key, counter, transports |
-| `sessions` | id, user_id, expires_at |
-| `invite_codes` | code, created_by, uses_left |
-| `characters` | user_id, level, xp, gold, unspent_points, cosmetic_loadout |
-| `skill_allocations` | user_id, skill_id, rank |
-| `runs` | id, user_id, started_at, ended_at, distance_m, moving_time_s, seed, status (`active` / `submitted` / `validated` / `flagged`), raid_id, metrics_json |
-| `run_splits` | run_id, km_index, duration_s |
-| `run_routes` | run_id, encoded_polyline (**readable by the owner only**) |
-| `items` | id, owner_id, base_id, rarity, item_level, stats_json, equipped_slot, source_run_id |
-| `teams` / `team_members` / `team_invites` | team id, name; membership and join time; invite token and expiry |
-| `raids` / `raid_contributions` | boss_id, team_id, window start and end, hp_max, hp_left, status; damage and run count per user |
-| `quests`, `achievements`, `streaks` | per-user progress |
+| Table                                     | Key columns                                                                                                                                          |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `users`                                   | id, display_name, email, created_at                                                                                                                  |
+| `passkeys`                                | id, user_id, public_key, counter, transports                                                                                                         |
+| `sessions`                                | id, user_id, expires_at                                                                                                                              |
+| `invite_codes`                            | code, created_by, uses_left                                                                                                                          |
+| `characters`                              | user_id, level, xp, gold, unspent_points, cosmetic_loadout                                                                                           |
+| `skill_allocations`                       | user_id, skill_id, rank                                                                                                                              |
+| `runs`                                    | id, user_id, started_at, ended_at, distance_m, moving_time_s, seed, status (`active` / `submitted` / `validated` / `flagged`), raid_id, metrics_json |
+| `run_splits`                              | run_id, km_index, duration_s                                                                                                                         |
+| `run_routes`                              | run_id, encoded_polyline (**readable by the owner only**)                                                                                            |
+| `items`                                   | id, owner_id, base_id, rarity, item_level, stats_json, equipped_slot, source_run_id                                                                  |
+| `teams` / `team_members` / `team_invites` | team id, name; membership and join time; invite token and expiry                                                                                     |
+| `raids` / `raid_contributions`            | boss_id, team_id, window start and end, hp_max, hp_left, status; damage and run count per user                                                       |
+| `quests`, `achievements`, `streaks`       | per-user progress                                                                                                                                    |
 
 Static game content (item bases, skills, bosses, quests) lives **in code** in `packages/game`, not in the database, so it's version-controlled and reviewable.
 
@@ -84,13 +85,21 @@ Static game content (item bases, skills, bosses, quests) lives **in code** in `p
 
 ## Environments
 
-| Environment | Where | Database |
-|---|---|---|
-| Local | `wrangler dev` / Vite dev server | Local D1 (in a file) |
-| Preview | A per-PR preview URL from `wrangler versions upload` | Preview D1 |
-| Production (the beta) | `*.workers.dev` or a custom domain | Production D1 |
+| Environment           | Where                                                                         | Database             |
+| --------------------- | ----------------------------------------------------------------------------- | -------------------- |
+| Local                 | `wrangler dev` / Vite dev server                                              | Local D1 (in a file) |
+| Preview               | The `runhach-preview` Worker, updated on every PR push (URL posted on the PR) | Preview D1           |
+| Production (the beta) | `*.workers.dev` or a custom domain                                            | Production D1        |
 
-**One-time setup you'll need to do:** create a Cloudflare account and add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as GitHub Actions secrets in the repo. Before email login goes live, add a `RESEND_API_KEY`. The Workers Free plan should cover a friends beta. The $5/month paid plan is only needed if we hit its limits.
+**One-time setup:** see [CONTRIBUTING.md](../CONTRIBUTING.md#one-time-setup). The databases have no IDs in `wrangler.jsonc`: Wrangler finds them by name, and the deploy workflow creates them on first run. The Workers Free plan should cover a friends beta. The $5/month paid plan is only needed if we hit its limits.
+
+## Auth details (Phase 0)
+
+- **Bootstrap:** while the `users` table is empty, sign-up needs no invite, and that first account becomes the admin. A conditional insert guarantees only one account can win.
+- **Invites:** each player can create 3 codes, and admins unlimited. A code is claimed atomically before the account is created, so it can't be used twice.
+- **Passkeys:** discoverable credentials, so signing in needs no username. The relying-party ID is the hostname the app is served from, so passkeys made on the preview URL don't work on production and vice versa. The email link covers that case.
+- **Email links:** the token travels in the URL _fragment_ (`/login/email#token=…`), so it never reaches server logs, and email link scanners can't use it up: it's redeemed by a POST from the page. Only the SHA-256 of the token is stored, and it expires after 15 minutes. Session tokens are stored the same way (hashed).
+- **CSRF:** state-changing requests must come from an allowed `Origin`. Session cookies are `HttpOnly`, `SameSite=Lax`, and `Secure` on HTTPS.
 
 ## Later: native wrap (Capacitor)
 

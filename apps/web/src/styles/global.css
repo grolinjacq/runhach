@@ -1,0 +1,449 @@
+@import "@fontsource/press-start-2p/400.css";
+@import "@fontsource/pixelify-sans/400.css";
+@import "@fontsource/pixelify-sans/600.css";
+
+/* ---- Tokens ------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+
+  --bg: #1a1423;
+  --bg-deep: #120e19;
+  --panel: #2b2140;
+  --panel-raised: #3a2d55;
+  --outline: #0d0a12;
+  --text: #f4e9d8;
+  --text-muted: #b5a8c6;
+  --gold: #f2c14e;
+  --gold-dark: #b8862b;
+  --green: #5bd66f;
+  --red: #e05858;
+  --blue: #5aa9e6;
+  --focus: #fff3c4;
+
+  --rarity-common: #c8c8c8;
+  --rarity-uncommon: #5bd66f;
+  --rarity-rare: #4ea4ff;
+  --rarity-epic: #b169ff;
+  --rarity-legendary: #ffa630;
+
+  --font-display: "Press Start 2P", ui-monospace, monospace;
+  --font-body: "Pixelify Sans", system-ui, sans-serif;
+
+  --px: 4px; /* one "art pixel" for borders and shadows */
+  --gutter: 16px;
+  --radius: 0;
+}
+
+/* ---- Base -------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+  -webkit-font-smoothing: none;
+  overscroll-behavior-y: none;
+}
+
+img,
+canvas,
+.pixelated {
+  image-rendering: pixelated;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0 0 0.75em;
+}
+h1 {
+  font-size: 18px;
+  color: var(--gold);
+  text-shadow: 3px 3px 0 var(--outline);
+}
+h2 {
+  font-size: 13px;
+}
+h3 {
+  font-size: 11px;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--gold);
+}
+
+:focus-visible {
+  outline: var(--px) solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---- Layout ------------------------------------------------------------ */
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 12px) var(--gutter)
+    calc(env(safe-area-inset-bottom) + 88px);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand img {
+  width: 32px;
+  height: 32px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.spacer {
+  flex: 1;
+}
+.center {
+  text-align: center;
+}
+.muted {
+  color: var(--text-muted);
+}
+.small {
+  font-size: 15px;
+}
+
+/* ---- Panels (stepped pixel border) ------------------------------------- */
+
+.panel {
+  background: var(--panel);
+  padding: 18px;
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--outline),
+    0 var(--px) 0 0 var(--outline),
+    calc(-1 * var(--px)) 0 0 0 var(--outline),
+    var(--px) 0 0 0 var(--outline),
+    inset 0 var(--px) 0 0 var(--panel-raised);
+  margin: var(--px);
+}
+
+.panel.hero {
+  text-align: center;
+  padding: 28px 18px;
+}
+
+/* ---- Buttons ----------------------------------------------------------- */
+
+.btn {
+  --btn-bg: var(--gold);
+  --btn-fg: var(--outline);
+  --btn-shade: var(--gold-dark);
+  appearance: none;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 18px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  line-height: 1.4;
+  text-decoration: none;
+  text-align: center;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  cursor: pointer;
+  margin: var(--px);
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--outline),
+    0 var(--px) 0 0 var(--outline),
+    calc(-1 * var(--px)) 0 0 0 var(--outline),
+    var(--px) 0 0 0 var(--outline),
+    inset 0 calc(-1 * var(--px)) 0 0 var(--btn-shade);
+  transition: transform 60ms steps(1);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 calc(-1 * var(--px)) 0 0 var(--outline),
+    0 var(--px) 0 0 var(--outline),
+    calc(-1 * var(--px)) 0 0 0 var(--outline),
+    var(--px) 0 0 0 var(--outline);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn.block {
+  width: calc(100% - 2 * var(--px));
+}
+.btn.secondary {
+  --btn-bg: var(--panel-raised);
+  --btn-fg: var(--text);
+  --btn-shade: var(--panel);
+}
+.btn.danger {
+  --btn-bg: var(--red);
+  --btn-fg: var(--outline);
+  --btn-shade: #a03a3a;
+}
+.btn.small {
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 9px;
+}
+
+.link-button {
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  color: var(--gold);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---- Forms ------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.field .hint {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  font-size: 18px; /* ≥16px stops iOS zooming on focus */
+  color: var(--text);
+  background: var(--bg-deep);
+  border: var(--px) solid var(--outline);
+  padding: 10px 12px;
+  width: 100%;
+  border-radius: 0;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ---- Feedback states --------------------------------------------------- */
+
+.notice {
+  padding: 12px 14px;
+  background: var(--bg-deep);
+  border-left: var(--px) solid var(--blue);
+}
+.notice.error {
+  border-left-color: var(--red);
+}
+.notice.success {
+  border-left-color: var(--green);
+}
+
+.status {
+  font-family: var(--font-display);
+  font-size: 9px;
+  padding: 4px 6px;
+  color: var(--outline);
+  white-space: nowrap;
+}
+.status.pass {
+  background: var(--green);
+}
+.status.warn {
+  background: var(--gold);
+}
+.status.fail {
+  background: var(--red);
+}
+.status.pending,
+.status.idle {
+  background: var(--panel-raised);
+  color: var(--text-muted);
+}
+
+/* ---- Lists ------------------------------------------------------------- */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.list li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--bg-deep);
+}
+.list .title {
+  font-weight: 600;
+}
+
+.code {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--gold);
+}
+
+/* ---- XP bar ------------------------------------------------------------ */
+
+.xpbar {
+  height: 16px;
+  background: var(--bg-deep);
+  border: var(--px) solid var(--outline);
+  position: relative;
+}
+.xpbar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: repeating-linear-gradient(90deg, var(--green) 0 8px, #48b85a 8px 12px);
+}
+
+/* ---- Stats (GPS lab / run screen) -------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+}
+.stat {
+  background: var(--bg-deep);
+  padding: 12px;
+}
+.stat .label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  color: var(--text-muted);
+}
+.stat .value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.track-plot {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-deep);
+  display: block;
+}
+
+/* ---- Floating chrome --------------------------------------------------- */
+
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px var(--gutter) calc(env(safe-area-inset-bottom) + 8px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(transparent, var(--bg) 40%);
+  pointer-events: none;
+}
+.dock > * {
+  pointer-events: auto;
+}
+.version {
+  font-family: var(--font-display);
+  font-size: 8px;
+  color: var(--text-muted);
+}
+
+.toast {
+  position: fixed;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(env(safe-area-inset-bottom) + 72px);
+  max-width: 528px;
+  margin: 0 auto;
+  z-index: 20;
+}
+
+dialog {
+  width: min(528px, calc(100vw - 2 * var(--gutter)));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+}
+dialog::backdrop {
+  background: rgb(13 10 18 / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
