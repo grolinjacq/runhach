@@ -1,6 +1,7 @@
 import { levelFromTotalXp, type GearStats, type LootItem } from "@runhach/game";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { ItemSprite } from "../components/Sprites";
 import { useProgress } from "../lib/progress";
 
 const STAT_KEYS: ReadonlyArray<keyof GearStats> = ["strength", "dexterity", "intellect", "luck"];
@@ -13,6 +14,9 @@ function ItemCard({ item }: { item: LootItem }) {
       className="panel stack"
       style={{ margin: 0, gap: 4, borderColor: `var(--rarity-${item.rarity})` }}
     >
+      <div className="center" style={{ marginBottom: 6 }}>
+        <ItemSprite item={item} size={72} />
+      </div>
       <strong style={{ color: `var(--rarity-${item.rarity})` }}>{item.name}</strong>
       <span className="small muted">
         {t(`inventory.rarity.${item.rarity}`)} · {t(`inventory.slot.${item.slot}`)}

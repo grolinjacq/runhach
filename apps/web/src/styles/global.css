@@ -447,3 +447,163 @@ dialog::backdrop {
     animation: none !important;
   }
 }
+
+/* ---- Run screen: next chest, chest reveal ------------------------------ */
+
+.loot-row {
+  padding: 6px 0;
+}
+
+.next-chest {
+  background: #150f1f;
+}
+.next-chest-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.next-chest-value {
+  font-family: var(--font-display);
+  font-size: 18px;
+  margin: 6px 0 2px;
+  font-variant-numeric: tabular-nums;
+}
+.next-chest.close {
+  animation: chest-near 0.8s steps(2) infinite;
+}
+@keyframes chest-near {
+  50% {
+    box-shadow:
+      0 0 0 4px var(--gold),
+      0 0 24px 4px rgb(242 193 78 / 0.5);
+  }
+}
+.chest-bar {
+  margin-top: 12px;
+  height: 18px;
+  background: var(--bg-deep);
+  border: var(--px) solid var(--outline);
+  position: relative;
+  overflow: hidden;
+}
+.chest-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: repeating-linear-gradient(90deg, var(--gold) 0 10px, var(--gold-dark) 10px 14px);
+  transition: width 0.3s steps(4);
+}
+
+.chest-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgb(7 5 11 / 0.82);
+  animation: reveal-in 0.2s ease-out;
+  cursor: pointer;
+}
+.chest-reveal.open.rarity-epic,
+.chest-reveal.open.rarity-legendary {
+  animation: reveal-flash 0.9s ease-out;
+}
+.chest-reveal.open.rarity-rare {
+  background: radial-gradient(circle, rgb(78 164 255 / 0.28), rgb(7 5 11 / 0.85) 70%);
+}
+.chest-reveal.open.rarity-epic {
+  background: radial-gradient(circle, rgb(177 105 255 / 0.35), rgb(7 5 11 / 0.85) 70%);
+}
+.chest-reveal.open.rarity-legendary {
+  background: radial-gradient(circle, rgb(255 166 48 / 0.45), rgb(7 5 11 / 0.85) 70%);
+}
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes reveal-flash {
+  0% {
+    background-color: #fff;
+  }
+}
+.chest-reveal-card {
+  position: relative;
+  width: min(360px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.chest-reveal-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 var(--outline);
+}
+.chest-shake {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: chest-shake 0.18s steps(2) infinite;
+}
+@keyframes chest-shake {
+  0% {
+    transform: translateX(-4px) rotate(-3deg);
+  }
+  100% {
+    transform: translateX(4px) rotate(3deg);
+  }
+}
+.chest-reveal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: item-pop 0.45s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+@keyframes item-pop {
+  from {
+    transform: scale(0.2) translateY(40px);
+    opacity: 0;
+  }
+}
+.chest-reveal-name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.5;
+  text-shadow: 3px 3px 0 var(--outline);
+}
+.chest-reveal-rarity {
+  font-family: var(--font-display);
+  font-size: 10px;
+}
+.chest-reveal-stats {
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: var(--green);
+}
+.chest-reveal-burst {
+  opacity: 0.9;
+}
+
+.best-find {
+  border-left: var(--px) solid var(--gold);
+}
+.level-up {
+  font-family: var(--font-display);
+  font-size: 12px;
+  animation: chest-near 0.8s steps(2) 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chest-shake,
+  .chest-reveal-item,
+  .next-chest.close {
+    animation: none;
+  }
+}

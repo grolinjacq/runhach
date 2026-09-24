@@ -17,6 +17,8 @@ export interface LootItem {
   name: string;
   rarity: Rarity;
   slot: GearSlot;
+  /** Item type, lowercase (e.g. "sword", "sandals"); picks the pixel-art sprite. */
+  base?: string;
   stats: GearStats;
   /** 1-based kilometer the chest dropped at. */
   foundAtKm: number;
@@ -24,7 +26,7 @@ export interface LootItem {
 
 export const GEAR_SLOTS: readonly GearSlot[] = ["weapon", "armor", "boots", "trinket"];
 
-const BASE_NAMES: Record<GearSlot, readonly string[]> = {
+export const BASE_NAMES: Record<GearSlot, readonly string[]> = {
   weapon: ["Sword", "Bow", "Staff", "Axe", "Dagger", "Mace"],
   armor: ["Tunic", "Chainmail", "Robe", "Jerkin", "Breastplate"],
   boots: ["Sandals", "Treads", "Striders", "Sneakers", "Greaves"],
@@ -104,6 +106,7 @@ export function rollChest(seed: string, kmIndex: number, luck: number): LootItem
     name: `${prefix} ${base}${suffix}`,
     rarity,
     slot,
+    base: base.toLowerCase(),
     stats,
     foundAtKm: kmIndex,
   };

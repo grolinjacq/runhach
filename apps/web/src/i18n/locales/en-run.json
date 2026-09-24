@@ -28,6 +28,13 @@
     "level": "Level",
     "leveledUp": "Level up! You are now level {{level}}.",
     "toInventory": "Open inventory",
-    "runAgain": "Run again"
+    "runAgain": "Run again",
+    "nextChest": "Next chest",
+    "almostThere": "Almost there!",
+    "nextChestIn": "{{distance}} km to go",
+    "eta": "≈ {{time}} at your pace",
+    "opening": "The chest is rattling…",
+    "tapToClose": "Tap to keep running",
+    "bestFind": "Best find"
   }
 }

@@ -13,6 +13,7 @@ import {
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import { ChestSprite, ItemSprite } from "../components/Sprites";
 import { BrowserLocationSource } from "../lib/location/browser";
 import { simulatedSource } from "../lib/location/replay";
 import type { LocationError, LocationSource } from "../lib/location/types";
@@ -25,7 +26,9 @@ type Phase = "idle" | "running" | "done";
 const DEMO_START = { lat: 49.4521, lon: 11.0767 };
 const DEMO_PACE_SECONDS = 330; // 5:30 /km
 const DEMO_SPEED = 30; // a km every ~11 s
-const TOAST_MS = 4000;
+const TOAST_MS = 5200;
+/** How long the chest shakes before it bursts open. */
+const CHEST_SHAKE_MS = 900;
 
 interface Track {
   last: TrackPoint | null;
@@ -123,14 +126,102 @@ function LootList({ loot }: { loot: LootItem[] }) {
   return (
     <ul className="stack" style={{ listStyle: "none", padding: 0, margin: 0 }}>
       {loot.map((item) => (
-        <li key={item.id} className="row" style={{ justifyContent: "space-between", gap: 8 }}>
-          <span style={{ color: rarityColor(item.rarity), fontWeight: 700 }}>{item.name}</span>
-          <span className="muted small">
-            {t("run.kmTag", { km: item.foundAtKm })} · {t(`inventory.rarity.${item.rarity}`)}
+        <li key={item.id} className="row loot-row" style={{ gap: 12, flexWrap: "nowrap" }}>
+          <ItemSprite item={item} size={44} />
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <span style={{ color: rarityColor(item.rarity), fontWeight: 700, display: "block" }}>
+              {item.name}
+            </span>
+            <span className="muted small">
+              {t("run.kmTag", { km: item.foundAtKm })} · {t(`inventory.rarity.${item.rarity}`)}
+            </span>
           </span>
         </li>
       ))}
     </ul>
+  );
+}
+
+/** "Next chest in 0.43 km · ≈ 2:21" with a filling bar and a waiting chest. */
+function NextChest({ distance, elapsed }: { distance: number; elapsed: number }) {
+  const { t } = useTranslation();
+  const every = BALANCE.loot.chestEveryMeters;
+  const into = distance % every;
+  const remaining = every - into;
+  const secondsPerMeter = distance > 30 ? elapsed / distance : null;
+  const eta = secondsPerMeter ? formatDuration(remaining * secondsPerMeter) : "–:––";
+  const close = remaining <= 150;
+  return (
+    <div className={`panel next-chest${close ? " close" : ""}`} data-testid="next-chest">
+      <div className="row" style={{ flexWrap: "nowrap", gap: 14 }}>
+        <ChestSprite rarity="common" open={false} size={64} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="next-chest-label">
+            {close ? t("run.almostThere") : t("run.nextChest")}
+          </div>
+          <div className="next-chest-value">
+            {t("run.nextChestIn", { distance: (remaining / 1000).toFixed(2) })}
+          </div>
+          <div className="muted small">{t("run.eta", { time: eta })}</div>
+        </div>
+      </div>
+      <div className="chest-bar" aria-hidden>
+        <span style={{ width: `${(into / every) * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** Full-screen chest reveal: the chest shakes, bursts open, and the item pops out. */
+function ChestReveal({ item, onClose }: { item: LootItem; onClose: () => void }) {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setOpen(true), CHEST_SHAKE_MS);
+    return () => clearTimeout(timer);
+  }, [item.id]);
+  const stats = Object.entries(item.stats)
+    .filter(([, v]) => v > 0)
+    .map(([k, v]) => `+${v} ${t(`inventory.stat.${k}`)}`)
+    .join("  ");
+  return (
+    <div
+      className={`chest-reveal rarity-${item.rarity}${open ? " open" : ""}`}
+      role="status"
+      onClick={onClose}
+    >
+      <div className="chest-reveal-card">
+        <div className="chest-reveal-title">
+          {t("run.chestDropped", {
+            km: item.foundAtKm,
+            rarity: t(`inventory.rarity.${item.rarity}`),
+          })}
+        </div>
+        {open ? (
+          <div className="chest-reveal-item">
+            <ItemSprite item={item} size={128} />
+            <div className="chest-reveal-name" style={{ color: rarityColor(item.rarity) }}>
+              {item.name}
+            </div>
+            <div className="chest-reveal-rarity" style={{ color: rarityColor(item.rarity) }}>
+              ★ {t(`inventory.rarity.${item.rarity}`)} {t(`inventory.slot.${item.slot}`)} ★
+            </div>
+            {stats && <div className="chest-reveal-stats">{stats}</div>}
+          </div>
+        ) : (
+          <div className="chest-shake">
+            <ChestSprite rarity={item.rarity} open={false} size={144} />
+            <div className="muted small">{t("run.opening")}</div>
+          </div>
+        )}
+        {open && (
+          <div className="chest-reveal-burst" aria-hidden>
+            <ChestSprite rarity={item.rarity} open size={72} />
+          </div>
+        )}
+        <div className="muted small">{t("run.tapToClose")}</div>
+      </div>
+    </div>
   );
 }
 
@@ -326,6 +417,7 @@ export function RunPage() {
               {t("run.waitingForGps")}
             </p>
           )}
+          <NextChest distance={track.distance} elapsed={elapsed} />
           {errorNotice}
           <div className="panel stack">
             <h2 style={{ margin: 0 }}>{t("run.lootThisRun")}</h2>
@@ -335,28 +427,16 @@ export function RunPage() {
             {t("run.stop")}
           </button>
         </div>
-        {toast && (
-          <div
-            className="toast panel"
-            role="status"
-            style={{ borderColor: rarityColor(toast.rarity) }}
-          >
-            <div className="small muted">
-              {t("run.chestDropped", {
-                km: toast.foundAtKm,
-                rarity: t(`inventory.rarity.${toast.rarity}`),
-              })}
-            </div>
-            <div style={{ color: rarityColor(toast.rarity), fontSize: 22, fontWeight: 800 }}>
-              {toast.name}
-            </div>
-          </div>
-        )}
+        {toast && <ChestReveal key={toast.id} item={toast} onClose={() => setToast(null)} />}
       </div>
     );
   }
 
   if (phase === "done" && summary) {
+    const bestFind = summary.loot.reduce<LootItem | null>(
+      (best, item) => (!best || TIER[item.rarity] > TIER[best.rarity] ? item : best),
+      null,
+    );
     return (
       <div className="stack">
         <h1>{t("run.summaryTitle")}</h1>
@@ -380,7 +460,24 @@ export function RunPage() {
           </div>
         </div>
         {summary.leveledUp && (
-          <p className="notice success">{t("run.leveledUp", { level: summary.level })}</p>
+          <p className="notice success level-up">{t("run.leveledUp", { level: summary.level })}</p>
+        )}
+        {bestFind && (
+          <div className={`panel best-find rarity-${bestFind.rarity}`}>
+            <div className="next-chest-label">{t("run.bestFind")}</div>
+            <div className="row" style={{ flexWrap: "nowrap", gap: 14 }}>
+              <ItemSprite item={bestFind} size={88} />
+              <div>
+                <div style={{ color: rarityColor(bestFind.rarity), fontWeight: 700, fontSize: 20 }}>
+                  {bestFind.name}
+                </div>
+                <div className="muted small">
+                  {t(`inventory.rarity.${bestFind.rarity}`)} ·{" "}
+                  {t(`inventory.slot.${bestFind.slot}`)}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
         <div className="panel stack">
           <h2 style={{ margin: 0 }}>{t("run.lootThisRun")}</h2>
@@ -398,8 +495,11 @@ export function RunPage() {
 
   return (
     <div className="stack">
-      <h1>{t("run.title")}</h1>
-      <p className="muted small">{t("run.intro")}</p>
+      <div className="center">
+        <ChestSprite rarity="legendary" open={false} size={112} />
+      </div>
+      <h1 className="center">{t("run.title")}</h1>
+      <p className="muted small center">{t("run.intro")}</p>
       <div className="panel stack" role="radiogroup" aria-label={t("run.modeLabel")}>
         <label className="row" style={{ gap: 8 }}>
           <input
