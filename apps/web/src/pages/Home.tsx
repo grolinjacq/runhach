@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { DEV_TOOLS } from "../config";
 import { useMe } from "../lib/auth";
+import { useProgress } from "../lib/progress";
 
 function Welcome() {
   const { t } = useTranslation();
@@ -21,7 +22,10 @@ function Welcome() {
         <p>{t("welcome.body")}</p>
         <p className="muted small">{t("welcome.betaNote")}</p>
       </section>
-      <Link to="/signup" className="btn block">
+      <Link to="/run" className="btn block">
+        {t("home.startRun")}
+      </Link>
+      <Link to="/signup" className="btn block secondary">
         {t("welcome.createAccount")}
       </Link>
       <Link to="/login" className="btn block secondary">
@@ -37,11 +41,11 @@ function Welcome() {
 export function HomePage() {
   const { t } = useTranslation();
   const { data: me, isPending } = useMe();
+  const { totalXp } = useProgress();
   if (isPending) return <p className="muted">{t("common.loading")}</p>;
   if (!me) return <Welcome />;
 
-  // XP arrives in Phase 2; show the starting state of the progression curve.
-  const progress = levelFromTotalXp(0);
+  const progress = levelFromTotalXp(totalXp);
   return (
     <div className="stack">
       <section className="panel">
@@ -57,8 +61,13 @@ export function HomePage() {
           <span style={{ width: `${(progress.xpIntoLevel / progress.xpForNextLevel) * 100}%` }} />
         </div>
       </section>
-      <p className="muted">{t("home.comingSoon")}</p>
-      <Link to="/device-check" className="btn block">
+      <Link to="/run" className="btn block">
+        {t("home.startRun")}
+      </Link>
+      <Link to="/inventory" className="btn block secondary">
+        {t("home.inventory")}
+      </Link>
+      <Link to="/device-check" className="btn block secondary">
         {t("home.deviceCheck")}
       </Link>
       <Link to="/invites" className="btn block secondary">

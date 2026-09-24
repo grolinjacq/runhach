@@ -12,10 +12,12 @@ import { DeviceCheckPage } from "./pages/DeviceCheck";
 import { EmailLoginPage } from "./pages/EmailLogin";
 import { GpsLabPage } from "./pages/GpsLab";
 import { HomePage } from "./pages/Home";
+import { InventoryPage } from "./pages/Inventory";
 import { InvitesPage } from "./pages/Invites";
 import { LoginPage } from "./pages/Login";
 import { NotFoundPage } from "./pages/NotFound";
 import { ProfilePage } from "./pages/Profile";
+import { RunPage } from "./pages/Run";
 import { SignupPage } from "./pages/Signup";
 
 function RequireUser({ children, admin = false }: { children: ReactNode; admin?: boolean }) {
@@ -44,6 +46,9 @@ export function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/login/email" element={<EmailLoginPage />} />
           <Route path="/device-check" element={<DeviceCheckPage />} />
+          {/* Run + inventory work without an account (progress is saved on the device). */}
+          <Route path="/run" element={<RunPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
           <Route
             path="/profile"
             element={

@@ -52,6 +52,8 @@
     "level": "Level {{level}}",
     "xp": "{{current}} / {{next}} XP",
     "comingSoon": "Runs, XP and loot arrive in the next phases. For now, make sure your phone is ready for adventure:",
+    "startRun": "Start a run",
+    "inventory": "Inventory",
     "deviceCheck": "Run the device check",
     "invites": "Invite friends",
     "profile": "Profile & passkeys",
