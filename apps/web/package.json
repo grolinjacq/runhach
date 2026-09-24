@@ -1,0 +1,37 @@
+{
+  "name": "@runhach/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "vitest run --passWithNoTests",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "dependencies": {
+    "@fontsource/pixelify-sans": "^5.3.0",
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@runhach/game": "workspace:*",
+    "@runhach/shared": "workspace:*",
+    "@simplewebauthn/browser": "^14.0.0",
+    "@tanstack/react-query": "^5.103.2",
+    "i18next": "^26.4.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-i18next": "^17.0.15",
+    "react-router": "^8.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.1",
+    "vite": "^8.3.1",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "~4.1.11",
+    "workbox-window": "^7.4.1"
+  }
+}

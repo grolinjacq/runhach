@@ -1,0 +1,34 @@
+{
+  "inventory": {
+    "title": "Inventory",
+    "level": "Level {{level}}",
+    "xp": "{{current}} / {{next}} XP",
+    "totalXp": "Total XP",
+    "totalKm": "Total distance",
+    "km": "{{km}} km",
+    "runs": "Runs",
+    "items": "Items ({{count}})",
+    "foundAtKm": "Found at km {{km}}",
+    "empty": "No loot yet. Every kilometer you run drops a chest!",
+    "startRun": "Start a run",
+    "rarity": {
+      "common": "Common",
+      "uncommon": "Uncommon",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "slot": {
+      "weapon": "Weapon",
+      "armor": "Armor",
+      "boots": "Boots",
+      "trinket": "Trinket"
+    },
+    "stat": {
+      "strength": "STR",
+      "dexterity": "DEX",
+      "intellect": "INT",
+      "luck": "LUCK"
+    }
+  }
+}

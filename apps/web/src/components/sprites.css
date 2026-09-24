@@ -1,0 +1,198 @@
+.rh-item {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: var(--rh-c);
+  border-radius: 6px;
+  background: radial-gradient(circle at 50% 42%, #2c2240 0%, #1a1424 45%, #120e19 75%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.55);
+  image-rendering: pixelated;
+}
+.rh-item svg {
+  width: 80%;
+  height: 80%;
+  display: block;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.6));
+}
+.rh-item--epic,
+.rh-item--legendary {
+  animation: rh-glow 2.4s ease-in-out infinite;
+}
+.rh-item--legendary {
+  animation-duration: 1.8s;
+}
+@keyframes rh-glow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.55),
+      0 0 3px 0 var(--rh-c);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 6px 0 var(--rh-c),
+      0 0 12px 2px var(--rh-c);
+  }
+}
+
+.rh-chest {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  image-rendering: pixelated;
+}
+.rh-chest svg {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.45));
+}
+.rh-chest--closed svg {
+  transform-origin: 50% 90%;
+  animation: rh-bob 2s ease-in-out infinite;
+}
+.rh-chest--open svg {
+  animation: rh-pop 0.55s cubic-bezier(0.2, 1.7, 0.4, 1) both;
+}
+@keyframes rh-bob {
+  0%,
+  55%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  10% {
+    transform: translateY(-5%) rotate(-4deg);
+  }
+  20% {
+    transform: translateY(0) rotate(4deg);
+  }
+  30% {
+    transform: translateY(-3%) rotate(-3deg);
+  }
+  40% {
+    transform: translateY(0) rotate(2deg);
+  }
+}
+@keyframes rh-pop {
+  0% {
+    transform: scale(0.7, 1.2);
+  }
+  60% {
+    transform: scale(1.12, 0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.rh-chest__glow,
+.rh-chest__rays,
+.rh-chest__rays2 {
+  position: absolute;
+  z-index: 1;
+  left: -40%;
+  right: -40%;
+  top: -60%;
+  bottom: -20%;
+  pointer-events: none;
+  border-radius: 50%;
+}
+.rh-chest__glow {
+  background: radial-gradient(circle at 50% 50%, var(--rh-l) 0%, var(--rh-c) 18%, transparent 55%);
+  opacity: 0.75;
+  animation:
+    rh-burst 0.6s ease-out both,
+    rh-throb 1.6s ease-in-out 0.6s infinite;
+}
+.rh-chest__rays {
+  background: repeating-conic-gradient(from 0deg, var(--rh-c) 0deg 9deg, transparent 9deg 30deg);
+  -webkit-mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 12%, transparent 62%);
+  opacity: 0.8;
+  animation:
+    rh-burst 0.6s ease-out both,
+    rh-spin 10s linear infinite;
+}
+.rh-chest--legendary .rh-chest__rays {
+  background: repeating-conic-gradient(from 0deg, #ffe38a 0deg 7deg, transparent 7deg 18deg);
+  opacity: 1;
+  animation-duration: 0.6s, 6s;
+}
+.rh-chest__rays2 {
+  background: repeating-conic-gradient(from 9deg, #ff8a1f 0deg 5deg, transparent 5deg 24deg);
+  -webkit-mask-image: radial-gradient(circle, #000 8%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 8%, transparent 70%);
+  animation:
+    rh-burst 0.7s ease-out both,
+    rh-spin-rev 9s linear infinite;
+}
+@keyframes rh-burst {
+  from {
+    scale: 0;
+  }
+  to {
+    scale: 1;
+  }
+}
+@keyframes rh-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes rh-spin-rev {
+  to {
+    rotate: -360deg;
+  }
+}
+@keyframes rh-throb {
+  50% {
+    opacity: 1;
+  }
+}
+
+.rh-spark {
+  position: absolute;
+  z-index: 3;
+  width: 7%;
+  height: 7%;
+  left: 46%;
+  top: 34%;
+  background: var(--rh-l);
+  box-shadow: 0 0 6px 1px var(--rh-c);
+  pointer-events: none;
+  opacity: 0;
+  animation: rh-spark 1.4s ease-out infinite;
+}
+@keyframes rh-spark {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3) rotate(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(1) rotate(45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rh-item,
+  .rh-chest svg,
+  .rh-chest__glow,
+  .rh-chest__rays,
+  .rh-chest__rays2 {
+    animation: none !important;
+  }
+  .rh-spark {
+    display: none;
+  }
+}

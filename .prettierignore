@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+dist/
+coverage/
+playwright-report/
+test-results/
+.wrangler/
+apps/worker/worker-configuration.d.ts
+apps/worker/migrations/meta/
+e2e/fixtures/
+apps/web/public/

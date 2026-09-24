@@ -1,0 +1,30 @@
+{
+  "name": "@runhach/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --var APP_ENV:development --var EXTRA_ORIGINS:http://localhost:5173",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "vitest run",
+    "cf-typegen": "wrangler types --strict-vars=false",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:preview": "wrangler d1 migrations apply DB --remote --env preview",
+    "db:migrate:production": "wrangler d1 migrations apply DB --remote"
+  },
+  "dependencies": {
+    "@runhach/game": "workspace:*",
+    "@runhach/shared": "workspace:*",
+    "@simplewebauthn/server": "^14.0.2",
+    "drizzle-orm": "^0.45.3",
+    "hono": "^4.13.9",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "drizzle-kit": "^0.31.11",
+    "vitest": "~4.1.11",
+    "wrangler": "^4.138.0"
+  }
+}
