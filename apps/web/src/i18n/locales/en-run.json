@@ -1,1 +1,33 @@
-{ "run": {} }
+{
+  "run": {
+    "title": "Begin your quest",
+    "intro": "Every kilometer you run drops a loot chest. Keep your phone unlocked in hand or pocket.",
+    "modeLabel": "Run mode",
+    "modeGps": "GPS run",
+    "modeGpsHint": "The real deal: your legs, your GPS, your loot.",
+    "modeDemo": "Demo run (simulated)",
+    "modeDemoHint": "For judges and couch heroes: a simulated 5:30/km run at ×{{speed}} speed. A chest drops about every 11 seconds.",
+    "demoBadge": "DEMO RUN · simulated ×{{speed}}",
+    "start": "Start run",
+    "stop": "Stop run",
+    "km": "kilometers",
+    "time": "Time",
+    "avgPace": "Avg pace /km",
+    "distance": "Distance",
+    "waitingForGps": "Searching the skies for GPS…",
+    "lootThisRun": "Loot this run",
+    "noLoot": "No chests yet. The next one waits at the next kilometer!",
+    "kmTag": "km {{km}}",
+    "chestDropped": "Kilometer {{km}} · {{rarity}} chest!",
+    "speech": "Kilometer {{km}}. {{rarity}} chest! {{name}}.",
+    "chestError": "The chest is stuck shut: {{message}}",
+    "gpsError": "GPS trouble: {{message}}",
+    "saveError": "Could not save this run: {{message}}",
+    "summaryTitle": "Quest complete!",
+    "xpEarned": "XP earned",
+    "level": "Level",
+    "leveledUp": "Level up! You are now level {{level}}.",
+    "toInventory": "Open inventory",
+    "runAgain": "Run again"
+  }
+}
