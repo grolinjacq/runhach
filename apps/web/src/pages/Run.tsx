@@ -70,11 +70,11 @@ function currentPace(track: Track): number | null {
  */
 function demoPace(elapsedSeconds: number): number {
   const cycle = elapsedSeconds % 960;
-  if (cycle < 180) return 630; // 10:30 /km
-  if (cycle < 360) return 480; // 8:00
-  if (cycle < 600) return 345; // 5:45
-  if (cycle < 780) return 270; // 4:30
-  return 200; // 3:20
+  if (cycle < 150) return 630; // 10:30 /km
+  if (cycle < 300) return 480; // 8:00
+  if (cycle < 480) return 345; // 5:45
+  if (cycle < 630) return 270; // 4:30
+  return 200; // 3:20, the longest phase so the speedster gets screen time
 }
 
 const PARTICLES = Array.from({ length: 24 }, (_, i) => ({
